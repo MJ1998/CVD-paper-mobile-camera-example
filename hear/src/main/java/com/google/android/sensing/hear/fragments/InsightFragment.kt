@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.sensing.hear.R
 import com.google.android.sensing.hear.model.Field
+import com.google.android.sensing.hear.model.Thresholds
 import com.google.android.sensing.hear.model.parseStructValue
 
 class InsightFragment : Fragment(R.layout.fragment_insight) {
@@ -49,8 +50,13 @@ class InsightFragment : Fragment(R.layout.fragment_insight) {
       layoutManager = LinearLayoutManager(requireContext())
       adapter = causesAdapter
     }
+    val thresholds = mapOf(
+      "Opacity" to Thresholds(0.28, 0.72),
+      "abnormal_majority_vote" to Thresholds(0.25, 0.72),
+      "tb" to Thresholds(0.453, 0.5172)
+    )
     val causesList =
-      parseStructValue(args.result).fields.mapIndexed { index, item ->
+      parseStructValue(args.result, thresholds).fields.mapIndexed { index, item ->
         CauseItem(index + 1, item.getKeyDisplay(), item.getValueDisplay())
       }
 
@@ -60,13 +66,13 @@ class InsightFragment : Fragment(R.layout.fragment_insight) {
 
 fun Field.getKeyDisplay(): String {
   return when (key) {
-    "Opacity" -> "Opacity"
+    "Opacity" -> "Lung focal / multi-focal opacities"
     "tb" -> "Tuberculosis"
-    "abnormal_majority_vote" -> "Abnormality"
+    "abnormal_majority_vote" -> "Unspecified abnormality in chest X-ray"
     else -> ""
   }
 }
 
 fun Field.getValueDisplay(): String {
-  return "${(value.numberValue * 100).toInt()}% likely"
+  return value.numberValue //"${(value.numberValue * 100).toInt()}% likely"
 }

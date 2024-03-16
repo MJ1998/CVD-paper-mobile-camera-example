@@ -20,9 +20,11 @@ data class StructValue(val fields: List<Field>)
 
 data class Field(val key: String, val value: Value)
 
-data class Value(val numberValue: Double)
+data class Value(val numberValue: String)
 
-fun parseStructValue(input: String): StructValue {
+data class Thresholds(val low: Double, val high: Double)
+
+fun parseStructValue(input: String, thresholds: Map<String, Thresholds>): StructValue {
   val fields = mutableListOf<Field>()
 
   // Very basic parsing assuming the input format does not change.
@@ -38,10 +40,22 @@ fun parseStructValue(input: String): StructValue {
       }
       line.contains("number_value:") -> {
         value = line.split(":")[1].trim().toDouble()
-        if (key != "lri" && key != "uri") fields.add(Field(key, Value(value)))
+        if (key != "lri" && key != "uri") {
+          val classification = classifyValue(value, thresholds[key])
+          fields.add(Field(key, Value(classification)))
+        }
       }
     }
   }
 
   return StructValue(fields)
+}
+
+fun classifyValue(value: Double, thresholds: Thresholds?): String {
+  return when {
+    thresholds == null -> "Unknown"
+    value < thresholds.low -> "Low likelihood"
+    value >= thresholds.low && value < thresholds.high -> "Moderate likelihood"
+    else -> "High likelihood"
+  }
 }

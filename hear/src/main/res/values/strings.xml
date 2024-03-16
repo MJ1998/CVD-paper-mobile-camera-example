@@ -24,7 +24,7 @@
   <string name="insight_title">Possible causes</string>
   <string
         name="insight_description"
-    >Based on the recording your cough may be caused by:</string>
+    >Based on the recording, your cough may be caused by the following conditions:</string>
   <string name="record_again_button_text">Restart</string>
   <string
         name="disclaimer"
