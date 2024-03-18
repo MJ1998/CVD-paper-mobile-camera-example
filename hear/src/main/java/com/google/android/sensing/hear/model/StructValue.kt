@@ -40,6 +40,8 @@ fun parseStructValue(input: String, thresholds: Map<String, Thresholds>): Struct
       }
       line.contains("number_value:") -> {
         value = line.split(":")[1].trim().toDouble()
+        println(key)
+        println(value)
         if (key != "lri" && key != "uri") {
           val classification = classifyValue(value, thresholds[key])
           fields.add(Field(key, Value(classification)))

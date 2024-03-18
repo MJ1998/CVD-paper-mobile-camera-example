@@ -51,9 +51,9 @@ class InsightFragment : Fragment(R.layout.fragment_insight) {
       adapter = causesAdapter
     }
     val thresholds = mapOf(
-      "Opacity" to Thresholds(0.28, 0.72),
-      "abnormal_majority_vote" to Thresholds(0.25, 0.72),
-      "tb" to Thresholds(0.453, 0.5172)
+      "Opacity" to Thresholds(0.33, 0.63),
+      "abnormal_majority_vote" to Thresholds(0.31, 0.65),
+      "tb" to Thresholds(0.462, 0.512)
     )
     val causesList =
       parseStructValue(args.result, thresholds).fields.mapIndexed { index, item ->
