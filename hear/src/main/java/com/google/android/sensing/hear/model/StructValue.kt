@@ -18,7 +18,7 @@ package com.google.android.sensing.hear.model
 
 data class StructValue(val fields: List<Field>)
 
-data class Field(val key: String, val value: Value)
+data class Field(val key: String, var value: Value)
 
 data class Value(val numberValue: String)
 
@@ -50,14 +50,33 @@ fun parseStructValue(input: String, thresholds: Map<String, Thresholds>): Struct
     }
   }
 
+  // Find the field with key "abnormal_majority_vote"
+  val abnormalMajorityVoteField = fields.find { it.key == "abnormal_majority_vote" }
+    ?: throw Exception("Field 'abnormal_majority_vote' not found")
+
+  // Find the "Opacity" field and extract its value
+  val opacityValue = fields.find { it.key == "Opacity" }?.value?.numberValue
+    ?: throw Exception("Field 'Opacity' not found or has invalid value")
+
+  // Calculate the new value
+  val newValue = minOf(abnormalMajorityVoteField.value.numberValue, opacityValue)
+
+  println(abnormalMajorityVoteField.value.numberValue)
+  println(opacityValue)
+
+  // Update the field's value
+  abnormalMajorityVoteField.value = Value(newValue)
+
+  fields.sortBy { it.value.numberValue }
+
   return StructValue(fields)
 }
 
 fun classifyValue(value: Double, thresholds: Thresholds?): String {
   return when {
     thresholds == null -> "Unknown"
-    value < thresholds.low -> "Low likelihood"
-    value >= thresholds.low && value < thresholds.high -> "Moderate likelihood"
-    else -> "High likelihood"
+    value < thresholds.low -> "Unlikely"
+    value >= thresholds.low && value < thresholds.high -> "Possible"
+    else -> "Likely"
   }
 }
