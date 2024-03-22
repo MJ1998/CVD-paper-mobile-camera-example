@@ -34,9 +34,9 @@ class HearApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
-//    if (BuildConfig.DEBUG) {
-//      Timber.plant(Timber.DebugTree())
-//    }
+    if (BuildConfig.DEBUG) {
+      Timber.plant(Timber.DebugTree())
+    }
     // workaround for making them available as soon as applicationContext is available.
     sensorManager = constructSensorManager()
     predictionServiceClient = constructPredictionServiceClient()
@@ -53,7 +53,7 @@ class HearApplication : Application() {
           .createScoped(listOf("https://www.googleapis.com/auth/cloud-platform"))
       val predictionServiceSettings =
         PredictionServiceSettings.newBuilder()
-          .setEndpoint("us-central1-aiplatform.googleapis.com:443")
+          .setEndpoint(TODO())
           .setCredentialsProvider { sourceCredentials }
           .build()
       PredictionServiceClient.create(predictionServiceSettings)
@@ -64,9 +64,9 @@ class HearApplication : Application() {
   }
 
   private fun constructEndpointName(): EndpointName {
-    val projectId = "hear-demo"
-    val endpointId = "645556262016122880"
-    val location = "us-central1"
+    val projectId = TODO()
+    val endpointId = TODO()
+    val location = TODO()
     return EndpointName.of(projectId, location, endpointId)
   }
 
